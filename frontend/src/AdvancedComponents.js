@@ -57,19 +57,19 @@ export function StatisticsScreen({ token }) {
   };
 
   if (loading) {
-    return <div className=\"loading-spinner\"></div>;
+    return <div className="loading-spinner"></div>;
   }
 
   return (
-    <div className=\"statistics-screen\">
-      <header className=\"screen-header\">
+    <div className="statistics-screen">
+      <header className="screen-header">
         <h1>Estatísticas</h1>
-        <button className=\"btn-secondary-small\" onClick={exportPDF}>
+        <button className="btn-secondary-small" onClick={exportPDF}>
           Exportar PDF
         </button>
       </header>
 
-      <div className=\"tabs\">
+      <div className="tabs">
         <button 
           className={activeTab === 'weekly' ? 'active' : ''}
           onClick={() => setActiveTab('weekly')}
@@ -84,50 +84,50 @@ export function StatisticsScreen({ token }) {
         </button>
       </div>
 
-      <div id=\"statistics-content\" className=\"statistics-content\">
+      <div id="statistics-content" className="statistics-content">
         {activeTab === 'weekly' && (
           <>
-            <div className=\"stats-summary\">
-              <div className=\"stat-card\">
-                <span className=\"stat-label\">Média Diária</span>
-                <span className=\"stat-value\">{Math.round(stats.weekly.avg_calories)} kcal</span>
+            <div className="stats-summary">
+              <div className="stat-card">
+                <span className="stat-label">Média Diária</span>
+                <span className="stat-value">{Math.round(stats.weekly.avg_calories)} kcal</span>
               </div>
-              <div className=\"stat-card\">
-                <span className=\"stat-label\">Meta</span>
-                <span className=\"stat-value\">{Math.round(stats.weekly.target_calories)} kcal</span>
+              <div className="stat-card">
+                <span className="stat-label">Meta</span>
+                <span className="stat-value">{Math.round(stats.weekly.target_calories)} kcal</span>
               </div>
-              <div className=\"stat-card\">
-                <span className=\"stat-label\">Total Semanal</span>
-                <span className=\"stat-value\">{Math.round(stats.weekly.total_calories)} kcal</span>
+              <div className="stat-card">
+                <span className="stat-label">Total Semanal</span>
+                <span className="stat-value">{Math.round(stats.weekly.total_calories)} kcal</span>
               </div>
             </div>
 
-            <div className=\"chart-container\">
+            <div className="chart-container">
               <h3>Calorias por Dia</h3>
-              <ResponsiveContainer width=\"100%\" height={250}>
+              <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray=\"3 3\" />
-                  <XAxis dataKey=\"day\" />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type=\"monotone\" dataKey=\"calories\" stroke=\"#4CAF50\" strokeWidth={2} />
+                  <Line type="monotone" dataKey="calories" stroke="#4CAF50" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
-            <div className=\"chart-container\">
+            <div className="chart-container">
               <h3>Macronutrientes</h3>
-              <ResponsiveContainer width=\"100%\" height={250}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray=\"3 3\" />
-                  <XAxis dataKey=\"day\" />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="day" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey=\"carbs\" fill=\"#FF9800\" name=\"Carboidratos\" />
-                  <Bar dataKey=\"protein\" fill=\"#4CAF50\" name=\"Proteínas\" />
-                  <Bar dataKey=\"fat\" fill=\"#F44336\" name=\"Gorduras\" />
+                  <Bar dataKey="carbs" fill="#FF9800" name="Carboidratos" />
+                  <Bar dataKey="protein" fill="#4CAF50" name="Proteínas" />
+                  <Bar dataKey="fat" fill="#F44336" name="Gorduras" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -136,23 +136,23 @@ export function StatisticsScreen({ token }) {
 
         {activeTab === 'monthly' && (
           <>
-            <div className=\"stats-summary\">
-              <div className=\"stat-card\">
-                <span className=\"stat-label\">Total de Refeições</span>
-                <span className=\"stat-value\">{stats.monthly.total_meals}</span>
+            <div className="stats-summary">
+              <div className="stat-card">
+                <span className="stat-label">Total de Refeições</span>
+                <span className="stat-value">{stats.monthly.total_meals}</span>
               </div>
             </div>
 
-            <div className=\"chart-container\">
+            <div className="chart-container">
               <h3>Calorias por Semana</h3>
-              <ResponsiveContainer width=\"100%\" height={300}>
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray=\"3 3\" />
-                  <XAxis dataKey=\"week\" />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="week" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey=\"calories\" fill=\"#4CAF50\" name=\"Calorias\" />
+                  <Bar dataKey="calories" fill="#4CAF50" name="Calorias" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -206,7 +206,7 @@ export function MealPlansScreen({ token, user }) {
   const sharePlan = async () => {
     if (!selectedPlan) return;
 
-    const shareText = `Confira meu plano de refeições semanal no Alimenta Jovem!\\n\\nMeta: ${Math.round(selectedPlan.target_calories)} kcal/dia`;
+    const shareText = `Confira meu plano de refeições semanal no Alimenta Jovem!\n\nMeta: ${Math.round(selectedPlan.target_calories)} kcal/dia`;
     
     if (navigator.share) {
       try {
@@ -225,56 +225,56 @@ export function MealPlansScreen({ token, user }) {
   };
 
   return (
-    <div className=\"meal-plans-screen\">
-      <header className=\"screen-header\">
+    <div className="meal-plans-screen">
+      <header className="screen-header">
         <h1>Planos de Refeição</h1>
         <p>Organize sua semana alimentar</p>
       </header>
 
       {!selectedPlan ? (
-        <div className=\"plans-list\">
+        <div className="plans-list">
           <button 
-            className=\"btn-primary generate-btn\"
+            className="btn-primary generate-btn"
             onClick={generateNewPlan}
             disabled={generating}
           >
             {generating ? 'Gerando...' : '🎯 Gerar Plano Semanal'}
           </button>
 
-          <div className=\"saved-plans\">
+          <div className="saved-plans">
             <h3>Planos Salvos</h3>
             {plans.length > 0 ? (
               plans.map(plan => (
-                <div key={plan.plan_id} className=\"plan-card\" onClick={() => setSelectedPlan(plan)}>
+                <div key={plan.plan_id} className="plan-card" onClick={() => setSelectedPlan(plan)}>
                   <h4>{plan.name}</h4>
                   <p>Meta: {Math.round(plan.target_calories)} kcal/dia</p>
-                  <span className=\"plan-date\">
+                  <span className="plan-date">
                     {new Date(plan.created_at).toLocaleDateString('pt-BR')}
                   </span>
                 </div>
               ))
             ) : (
-              <p className=\"empty-state\">Nenhum plano salvo ainda</p>
+              <p className="empty-state">Nenhum plano salvo ainda</p>
             )}
           </div>
         </div>
       ) : (
-        <div className=\"plan-details\">
-          <div className=\"plan-header\">
-            <button className=\"btn-back\" onClick={() => setSelectedPlan(null)}>
+        <div className="plan-details">
+          <div className="plan-header">
+            <button className="btn-back" onClick={() => setSelectedPlan(null)}>
               ← Voltar
             </button>
-            <button className=\"btn-secondary-small\" onClick={sharePlan}>
+            <button className="btn-secondary-small" onClick={sharePlan}>
               Compartilhar
             </button>
           </div>
 
           <h2>{selectedPlan.name}</h2>
-          <p className=\"plan-target\">Meta: {Math.round(selectedPlan.target_calories)} kcal/dia</p>
+          <p className="plan-target">Meta: {Math.round(selectedPlan.target_calories)} kcal/dia</p>
 
-          <div className=\"days-list\">
+          <div className="days-list">
             {selectedPlan.days.map(day => (
-              <div key={day.day} className=\"day-card\">
+              <div key={day.day} className="day-card">
                 <h3>{day.day_label}</h3>
                 
                 {Object.entries(day.meals).map(([mealType, foods]) => {
@@ -286,7 +286,7 @@ export function MealPlansScreen({ token, user }) {
                   };
 
                   return (
-                    <div key={mealType} className=\"meal-section\">
+                    <div key={mealType} className="meal-section">
                       <h4>{mealLabels[mealType]}</h4>
                       <ul>
                         {foods.map((food, idx) => (
@@ -340,23 +340,23 @@ export function BarcodeSearchModal({ onClose, onSelectProduct, token }) {
   };
 
   return (
-    <div className=\"modal-overlay\" onClick={onClose}>
-      <div className=\"modal-content barcode-modal\" onClick={(e) => e.stopPropagation()}>
-        <div className=\"modal-header\">
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content barcode-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
           <h2>Buscar por Código de Barras</h2>
-          <button className=\"btn-close\" onClick={onClose}>×</button>
+          <button className="btn-close" onClick={onClose}>×</button>
         </div>
 
-        <div className=\"barcode-search\">
+        <div className="barcode-search">
           <input
-            type=\"text\"
-            placeholder=\"Digite o código de barras\"
+            type="text"
+            placeholder="Digite o código de barras"
             value={barcode}
             onChange={(e) => setBarcode(e.target.value)}
-            className=\"barcode-input\"
+            className="barcode-input"
           />
           <button 
-            className=\"btn-primary\"
+            className="btn-primary"
             onClick={searchBarcode}
             disabled={searching}
           >
@@ -365,36 +365,36 @@ export function BarcodeSearchModal({ onClose, onSelectProduct, token }) {
         </div>
 
         {result && (
-          <div className=\"barcode-result\">
+          <div className="barcode-result">
             {result.image_url && (
-              <img src={result.image_url} alt={result.name} className=\"product-image\" />
+              <img src={result.image_url} alt={result.name} className="product-image" />
             )}
             <h3>{result.name}</h3>
-            {result.brand && <p className=\"product-brand\">{result.brand}</p>}
+            {result.brand && <p className="product-brand">{result.brand}</p>}
             
-            <div className=\"nutrition-info\">
-              <div className=\"nutrition-row\">
+            <div className="nutrition-info">
+              <div className="nutrition-row">
                 <span>Calorias:</span>
                 <span>{result.calories} kcal</span>
               </div>
-              <div className=\"nutrition-row\">
+              <div className="nutrition-row">
                 <span>Carboidratos:</span>
                 <span>{result.carbs}g</span>
               </div>
-              <div className=\"nutrition-row\">
+              <div className="nutrition-row">
                 <span>Proteínas:</span>
                 <span>{result.protein}g</span>
               </div>
-              <div className=\"nutrition-row\">
+              <div className="nutrition-row">
                 <span>Gorduras:</span>
                 <span>{result.fat}g</span>
               </div>
             </div>
 
-            <p className=\"source-info\">Fonte: {result.source}</p>
+            <p className="source-info">Fonte: {result.source}</p>
 
             <button 
-              className=\"btn-primary\"
+              className="btn-primary"
               onClick={() => onSelectProduct(result)}
             >
               Adicionar às Refeições
@@ -465,13 +465,13 @@ export function NotificationsSettings({ token }) {
   };
 
   return (
-    <div className=\"notifications-settings\">
+    <div className="notifications-settings">
       <h3>Notificações</h3>
       
-      <div className=\"setting-item\">
+      <div className="setting-item">
         <label>
           <input
-            type=\"checkbox\"
+            type="checkbox"
             checked={preferences.water_reminders}
             onChange={(e) => setPreferences({...preferences, water_reminders: e.target.checked})}
           />
@@ -479,10 +479,10 @@ export function NotificationsSettings({ token }) {
         </label>
       </div>
 
-      <div className=\"setting-item\">
+      <div className="setting-item">
         <label>
           <input
-            type=\"checkbox\"
+            type="checkbox"
             checked={preferences.meal_reminders}
             onChange={(e) => setPreferences({...preferences, meal_reminders: e.target.checked})}
           />
@@ -491,7 +491,7 @@ export function NotificationsSettings({ token }) {
       </div>
 
       <button 
-        className=\"btn-primary\"
+        className="btn-primary"
         onClick={savePreferences}
         disabled={saving}
       >
