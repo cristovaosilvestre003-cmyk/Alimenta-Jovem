@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 import axios from 'axios';
 import './App.css';
+import { StatisticsScreen, MealPlansScreen, BarcodeSearchModal, NotificationsSettings } from './AdvancedComponents';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
