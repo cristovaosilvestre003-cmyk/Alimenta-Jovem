@@ -22,10 +22,10 @@ export function StatisticsScreen({ token }) {
   const loadStatistics = async () => {
     try {
       const [weeklyRes, monthlyRes] = await Promise.all([
-        axios.get(`${API_URL}/api/statistics/weekly`, {
+        axios.get(`${API_URL}/statistics/weekly`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`${API_URL}/api/statistics/monthly`, {
+        axios.get(`${API_URL}/statistics/monthly`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -175,7 +175,7 @@ export function MealPlansScreen({ token, user }) {
 
   const loadMealPlans = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/meal-plans`, {
+      const response = await axios.get(`${API_URL}/meal-plans`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPlans(response.data.plans);
@@ -188,7 +188,7 @@ export function MealPlansScreen({ token, user }) {
     setGenerating(true);
     try {
       const response = await axios.post(
-        `${API_URL}/api/meal-plans/generate`,
+        `${API_URL}/meal-plans/generate`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -322,7 +322,7 @@ export function BarcodeSearchModal({ onClose, onSelectProduct, token }) {
     setSearching(true);
     try {
       const response = await axios.get(
-        `${API_URL}/api/barcode/search/${barcode}`,
+        `${API_URL}/barcode/search/${barcode}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -422,7 +422,7 @@ export function NotificationsSettings({ token }) {
 
   const loadPreferences = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/notifications/preferences`, {
+      const response = await axios.get(`${API_URL}/notifications/preferences`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPreferences(response.data.preferences);
@@ -441,7 +441,7 @@ export function NotificationsSettings({ token }) {
     setSaving(true);
     try {
       await axios.post(
-        `${API_URL}/api/notifications/preferences`,
+        `${API_URL}/notifications/preferences`,
         preferences,
         { headers: { Authorization: `Bearer ${token}` } }
       );

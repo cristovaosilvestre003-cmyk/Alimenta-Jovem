@@ -15,7 +15,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.get(`${API_URL}/api/auth/me`, {
+      axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => {
@@ -279,7 +279,7 @@ function AuthScreen() {
     setLoading(true);
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const response = await axios.post(`${API_URL}${endpoint}`, formData);
       login(response.data.access_token, response.data.user);
     } catch (err) {
@@ -423,10 +423,10 @@ function HomeScreen() {
   const loadDailyData = async () => {
     try {
       const [mealsRes, waterRes] = await Promise.all([
-        axios.get(`${API_URL}/api/meals`, {
+        axios.get(`${API_URL}/meals`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`${API_URL}/api/water-log`, {
+        axios.get(`${API_URL}/water-log`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -443,7 +443,7 @@ function HomeScreen() {
   const logWater = async () => {
     try {
       await axios.post(
-        `${API_URL}/api/water-log`,
+        `${API_URL}/water-log`,
         { glasses: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -608,7 +608,7 @@ function AddMealModal({ mealType, onClose, onSuccess }) {
       if (selectedCategory !== 'all') {
         params.category = selectedCategory;
       }
-      const response = await axios.get(`${API_URL}/api/food-database`, { params });
+      const response = await axios.get(`${API_URL}/food-database`, { params });
       setFoodDatabase(response.data.foods);
     } catch (error) {
       console.error('Error loading food database:', error);
@@ -642,7 +642,7 @@ function AddMealModal({ mealType, onClose, onSuccess }) {
     try {
       const nutrition = calculateNutrition(selectedFood, quantity);
       await axios.post(
-        `${API_URL}/api/meals`,
+        `${API_URL}/meals`,
         {
           meal_type: mealType,
           food_name: selectedFood.name,
@@ -876,7 +876,7 @@ function ScannerScreen() {
       formData.append('image_base64', imageBase64);
 
       const response = await axios.post(
-        `${API_URL}/api/analyze-food`,
+        `${API_URL}/analyze-food`,
         formData,
         { 
           headers: { 
@@ -905,7 +905,7 @@ function ScannerScreen() {
     try {
       for (const food of result.foods) {
         await axios.post(
-          `${API_URL}/api/meals`,
+          `${API_URL}/meals`,
           {
             meal_type: result.meal_type_suggestion || 'snack',
             food_name: food.name,
@@ -1060,11 +1060,11 @@ function TipsScreen() {
   const loadTipsAndGoals = async () => {
     try {
       const [tipsRes, goalsRes, badgesRes] = await Promise.all([
-        axios.get(`${API_URL}/api/tips`),
-        axios.get(`${API_URL}/api/goals`, {
+        axios.get(`${API_URL}/tips`),
+        axios.get(`${API_URL}/goals`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`${API_URL}/api/badges`, {
+        axios.get(`${API_URL}/badges`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
