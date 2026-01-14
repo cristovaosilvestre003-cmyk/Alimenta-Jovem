@@ -877,17 +877,22 @@ async def generate_meal_plan(current_user: dict = Depends(get_current_user)):
         })
     
     plan_id = str(uuid.uuid4())
+    created_at = datetime.utcnow()
     plan_data = {
         "plan_id": plan_id,
         "user_id": current_user["user_id"],
-        "name": f"Plano Semanal - {datetime.utcnow().strftime('%d/%m/%Y')}",
+        "name": f"Plano Semanal - {created_at.strftime('%d/%m/%Y')}",
         "days": meal_plan_days,
         "target_calories": target_calories,
         "active": True,
-        "created_at": datetime.utcnow()
+        "created_at": created_at
     }
     
     await db.meal_plans.insert_one(plan_data)
+    
+    # Remove _id and convert datetime for response
+    plan_data.pop("_id", None)
+    plan_data["created_at"] = created_at.isoformat()
     
     return {"success": True, "plan": plan_data, "message": "Plano gerado com sucesso!"}
 
