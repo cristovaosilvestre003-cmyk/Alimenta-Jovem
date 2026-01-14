@@ -128,6 +128,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Integração com emergentintegrations e GPT-4o funcionando perfeitamente. Testado com imagem de arroz, feijão e carne. Retornou análise nutricional detalhada em JSON com alimentos identificados, calorias, carboidratos, proteínas e gorduras. Sugestão de tipo de refeição incluída."
+      - working: true
+        agent: "testing"
+        comment: "Integração GPT-4o validada com sucesso. Endpoint /api/analyze-food funcionando corretamente. Modelo é restritivo com imagens sintéticas (rejeita desenhos simples) mas funciona perfeitamente com imagens realistas de alimentos. Testado com imagem de arroz e feijão - retornou análise completa: 323 calorias, 65g carbs, 13g proteína, 1.5g gordura, sugestão 'lunch'."
   
   - task: "Scanner de Código de Barras (Mock)"
     implemented: true
