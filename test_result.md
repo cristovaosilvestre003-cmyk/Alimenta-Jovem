@@ -206,15 +206,18 @@ backend:
   
   - task: "Sistema de Gamificação (Streaks e Badges)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implementado sistema de streaks (dias consecutivos) que atualiza automaticamente ao registrar refeições. 5 badges disponíveis: first_meal, week_streak (7 dias), month_streak (30 dias), ten_meals, fifty_meals. GET /api/badges retorna todas as conquistas. Precisa testar funcionamento completo."
+      - working: true
+        agent: "testing"
+        comment: "Sistema de gamificação funcionando perfeitamente. Streaks atualizando corretamente ao registrar refeições (testado com streak de 1 dia). Badges sendo conquistados automaticamente - first_meal badge conquistado após primeira refeição. GET /api/badges retorna 5 badges disponíveis com status correto (earned/not earned). Sistema de pontuação e motivação operacional."
   
   - task: "Dicas Nutricionais"
     implemented: true
