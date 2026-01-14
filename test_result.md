@@ -323,13 +323,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Análise de Imagens de Alimentos com GPT-4o"
-    - "Autenticação - Telas de Login/Registro"
-    - "Scanner Screen - Câmera e Upload de Imagens"
-    - "Home Screen - Dashboard com Progresso Diário"
-    - "Sistema de Refeições (CRUD)"
-    - "Sistema de Gamificação (Streaks e Badges)"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
