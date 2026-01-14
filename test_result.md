@@ -176,15 +176,18 @@ backend:
   
   - task: "Rastreador de Água"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implementado POST /api/water-log para registrar copos de água e GET /api/water-log para buscar consumo diário. Meta padrão de 8 copos. Precisa testar integração com frontend."
+      - working: true
+        agent: "testing"
+        comment: "Rastreador de água funcionando perfeitamente. POST /api/water-log registra copos corretamente (testado com 3 copos), GET /api/water-log retorna consumo atual com meta de 8 copos. Sistema acumula copos do mesmo dia adequadamente."
   
   - task: "Sistema de Metas"
     implemented: true
