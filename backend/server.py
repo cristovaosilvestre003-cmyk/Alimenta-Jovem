@@ -11,9 +11,11 @@ import os
 import uuid
 import base64
 import asyncio
+import aiohttp
 from dotenv import load_dotenv
 from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
 import json
+from collections import defaultdict
 
 load_dotenv()
 
@@ -771,6 +773,286 @@ async def get_badges(current_user: dict = Depends(get_current_user)):
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
+
+# =========================
+# MEAL PLANS
+# =========================
+
+class MealPlanCreate(BaseModel):
+    name: str
+    days: List[Dict[str, Any]]  # [{day: "monday", meals: [...]}]
+    target_calories: Optional[float] = None
+
+@app.post("/api/meal-plans")
+async def create_meal_plan(plan: MealPlanCreate, current_user: dict = Depends(get_current_user)):
+    plan_id = str(uuid.uuid4())
+    plan_data = {
+        "plan_id": plan_id,
+        "user_id": current_user["user_id"],
+        "name": plan.name,
+        "days": plan.days,
+        "target_calories": plan.target_calories,
+        "active": True,
+        "created_at": datetime.utcnow()
+    }
+    
+    await db.meal_plans.insert_one(plan_data)
+    return {"success": True, "plan_id": plan_id, "message": "Plano criado com sucesso!"}
+
+@app.get("/api/meal-plans")
+async def get_meal_plans(current_user: dict = Depends(get_current_user)):
+    plans = await db.meal_plans.find({"user_id": current_user["user_id"]}).to_list(100)
+    
+    for plan in plans:
+        plan["_id"] = str(plan["_id"])
+    
+    return {"plans": plans}
+
+@app.get("/api/meal-plans/{plan_id}")
+async def get_meal_plan(plan_id: str, current_user: dict = Depends(get_current_user)):
+    plan = await db.meal_plans.find_one({"plan_id": plan_id, "user_id": current_user["user_id"]})
+    
+    if not plan:
+        raise HTTPException(status_code=404, detail="Plano não encontrado")
+    
+    plan["_id"] = str(plan["_id"])
+    return {"plan": plan}
+
+@app.post("/api/meal-plans/generate")
+async def generate_meal_plan(current_user: dict = Depends(get_current_user)):
+    \"\"\"Generate automatic meal plan based on user profile\"\"\"
+    
+    target_calories = current_user.get("daily_calories_target", 2000)
+    
+    # Simple meal plan template (7 days)
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    day_labels = {
+        "monday": "Segunda-feira",
+        "tuesday": "Terça-feira", 
+        "wednesday": "Quarta-feira",
+        "thursday": "Quinta-feira",
+        "friday": "Sexta-feira",
+        "saturday": "Sábado",
+        "sunday": "Domingo"
+    }
+    
+    # Get food database
+    foods_response = await get_food_database()
+    all_foods = foods_response["foods"]
+    
+    # Categorize foods
+    breakfast_foods = [f for f in all_foods if f["category"] in ["carboidratos", "frutas", "laticinios"]]
+    lunch_dinner_foods = [f for f in all_foods if f["category"] in ["carboidratos", "proteinas"]]
+    snack_foods = [f for f in all_foods if f["category"] in ["frutas", "merendas", "bebidas"]]
+    
+    import random
+    
+    meal_plan_days = []
+    for day in days:
+        # Breakfast (30% of daily calories)
+        breakfast_target = target_calories * 0.3
+        breakfast = random.sample(breakfast_foods, min(3, len(breakfast_foods)))
+        
+        # Lunch (35% of daily calories)
+        lunch_target = target_calories * 0.35
+        lunch = random.sample(lunch_dinner_foods, min(4, len(lunch_dinner_foods)))
+        
+        # Dinner (25% of daily calories)
+        dinner_target = target_calories * 0.25
+        dinner = random.sample(lunch_dinner_foods, min(3, len(lunch_dinner_foods)))
+        
+        # Snack (10% of daily calories)
+        snack_target = target_calories * 0.1
+        snack = random.sample(snack_foods, min(2, len(snack_foods)))
+        
+        meal_plan_days.append({
+            "day": day,
+            "day_label": day_labels[day],
+            "meals": {
+                "breakfast": breakfast,
+                "lunch": lunch,
+                "dinner": dinner,
+                "snack": snack
+            }
+        })
+    
+    plan_id = str(uuid.uuid4())
+    plan_data = {
+        "plan_id": plan_id,
+        "user_id": current_user["user_id"],
+        "name": f"Plano Semanal - {datetime.utcnow().strftime('%d/%m/%Y')}",
+        "days": meal_plan_days,
+        "target_calories": target_calories,
+        "active": True,
+        "created_at": datetime.utcnow()
+    }
+    
+    await db.meal_plans.insert_one(plan_data)
+    
+    return {"success": True, "plan": plan_data, "message": "Plano gerado com sucesso!"}
+
+# =========================
+# STATISTICS & CHARTS
+# =========================
+
+@app.get("/api/statistics/weekly")
+async def get_weekly_statistics(current_user: dict = Depends(get_current_user)):
+    \"\"\"Get weekly statistics for charts\"\"\"
+    
+    end_date = datetime.utcnow()
+    start_date = end_date - timedelta(days=7)
+    
+    meals = await db.meals.find({
+        "user_id": current_user["user_id"],
+        "timestamp": {"$gte": start_date, "$lte": end_date}
+    }).to_list(500)
+    
+    # Group by date
+    daily_data = defaultdict(lambda: {"calories": 0, "carbs": 0, "protein": 0, "fat": 0, "meal_count": 0})
+    
+    for meal in meals:
+        date = meal["date"]
+        daily_data[date]["calories"] += meal.get("calories", 0)
+        daily_data[date]["carbs"] += meal.get("carbs", 0)
+        daily_data[date]["protein"] += meal.get("protein", 0)
+        daily_data[date]["fat"] += meal.get("fat", 0)
+        daily_data[date]["meal_count"] += 1
+    
+    # Format for charts
+    chart_data = []
+    for i in range(7):
+        date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+        day_name = (start_date + timedelta(days=i)).strftime("%a")
+        
+        chart_data.append({
+            "date": date,
+            "day": day_name,
+            "calories": round(daily_data[date]["calories"], 2),
+            "carbs": round(daily_data[date]["carbs"], 2),
+            "protein": round(daily_data[date]["protein"], 2),
+            "fat": round(daily_data[date]["fat"], 2),
+            "meal_count": daily_data[date]["meal_count"]
+        })
+    
+    return {
+        "weekly_data": chart_data,
+        "total_calories": sum(d["calories"] for d in chart_data),
+        "avg_calories": sum(d["calories"] for d in chart_data) / 7,
+        "target_calories": current_user.get("daily_calories_target", 2000)
+    }
+
+@app.get("/api/statistics/monthly")
+async def get_monthly_statistics(current_user: dict = Depends(get_current_user)):
+    \"\"\"Get monthly statistics\"\"\"
+    
+    end_date = datetime.utcnow()
+    start_date = end_date - timedelta(days=30)
+    
+    meals = await db.meals.find({
+        "user_id": current_user["user_id"],
+        "timestamp": {"$gte": start_date, "$lte": end_date}
+    }).to_list(1000)
+    
+    # Group by week
+    weekly_data = defaultdict(lambda: {"calories": 0, "meals": 0})
+    
+    for meal in meals:
+        week_num = meal["timestamp"].isocalendar()[1]
+        weekly_data[week_num]["calories"] += meal.get("calories", 0)
+        weekly_data[week_num]["meals"] += 1
+    
+    chart_data = [
+        {
+            "week": f"Sem {week}",
+            "calories": round(data["calories"], 2),
+            "meals": data["meals"]
+        }
+        for week, data in sorted(weekly_data.items())
+    ]
+    
+    return {
+        "monthly_data": chart_data,
+        "total_meals": sum(d["meals"] for d in chart_data)
+    }
+
+# =========================
+# OPEN FOOD FACTS API
+# =========================
+
+@app.get("/api/barcode/search/{barcode}")
+async def search_barcode_openfoodfacts(barcode: str, current_user: dict = Depends(get_current_user)):
+    \"\"\"Search product by barcode using Open Food Facts API\"\"\"
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            url = f"https://world.openfoodfacts.org/api/v0/product/{barcode}.json"
+            async with session.get(url) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if data.get("status") == 1:
+                        product = data.get("product", {})
+                        nutriments = product.get("nutriments", {})
+                        
+                        return {
+                            "success": True,
+                            "product": {
+                                "name": product.get("product_name", "Produto desconhecido"),
+                                "brand": product.get("brands", ""),
+                                "calories": nutriments.get("energy-kcal_100g", 0),
+                                "carbs": nutriments.get("carbohydrates_100g", 0),
+                                "protein": nutriments.get("proteins_100g", 0),
+                                "fat": nutriments.get("fat_100g", 0),
+                                "portion": "100g",
+                                "image_url": product.get("image_url", ""),
+                                "source": "Open Food Facts"
+                            }
+                        }
+                    else:
+                        return {
+                            "success": False,
+                            "message": "Produto não encontrado no Open Food Facts"
+                        }
+                else:
+                    return {
+                        "success": False,
+                        "message": "Erro ao consultar Open Food Facts"
+                    }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Erro: {str(e)}"
+        }
+
+# =========================
+# NOTIFICATIONS
+# =========================
+
+class NotificationPreferences(BaseModel):
+    water_reminders: bool = True
+    meal_reminders: bool = True
+    reminder_times: Optional[List[str]] = ["08:00", "12:00", "18:00"]
+
+@app.post("/api/notifications/preferences")
+async def set_notification_preferences(
+    prefs: NotificationPreferences, 
+    current_user: dict = Depends(get_current_user)
+):
+    await db.users.update_one(
+        {"user_id": current_user["user_id"]},
+        {"$set": {"notification_preferences": prefs.dict()}}
+    )
+    return {"success": True, "message": "Preferências salvas!"}
+
+@app.get("/api/notifications/preferences")
+async def get_notification_preferences(current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"user_id": current_user["user_id"]})
+    prefs = user.get("notification_preferences", {
+        "water_reminders": True,
+        "meal_reminders": True,
+        "reminder_times": ["08:00", "12:00", "18:00"]
+    })
+    return {"preferences": prefs}
 
 if __name__ == "__main__":
     import uvicorn
