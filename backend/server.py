@@ -423,34 +423,92 @@ async def get_meals_history(days: int = 7, current_user: dict = Depends(get_curr
 # =========================
 
 @app.get("/api/food-database")
-async def get_food_database(search: Optional[str] = None):
-    """Get Brazilian food database"""
+async def get_food_database(search: Optional[str] = None, category: Optional[str] = None):
+    """Get Brazilian food database with categories"""
     
-    # Brazilian foods database
+    # Brazilian foods database - expanded with categories
     brazilian_foods = [
-        {"name": "Arroz branco", "calories": 130, "carbs": 28, "protein": 2.5, "fat": 0.3, "portion": "100g"},
-        {"name": "Feijão preto", "calories": 77, "carbs": 14, "protein": 4.5, "fat": 0.5, "portion": "100g"},
-        {"name": "Frango grelhado", "calories": 165, "carbs": 0, "protein": 31, "fat": 3.6, "portion": "100g"},
-        {"name": "Carne bovina", "calories": 250, "carbs": 0, "protein": 26, "fat": 17, "portion": "100g"},
-        {"name": "Ovo cozido", "calories": 155, "carbs": 1.1, "protein": 13, "fat": 11, "portion": "unidade"},
-        {"name": "Banana", "calories": 89, "carbs": 23, "protein": 1.1, "fat": 0.3, "portion": "unidade"},
-        {"name": "Maçã", "calories": 52, "carbs": 14, "protein": 0.3, "fat": 0.2, "portion": "unidade"},
-        {"name": "Pão francês", "calories": 300, "carbs": 58, "protein": 9, "fat": 3.5, "portion": "unidade"},
-        {"name": "Batata doce", "calories": 86, "carbs": 20, "protein": 1.6, "fat": 0.1, "portion": "100g"},
-        {"name": "Macarrão", "calories": 131, "carbs": 25, "protein": 5, "fat": 1.1, "portion": "100g"},
-        {"name": "Leite integral", "calories": 61, "carbs": 4.7, "protein": 3.2, "fat": 3.3, "portion": "200ml"},
-        {"name": "Iogurte natural", "calories": 61, "carbs": 4.7, "protein": 3.5, "fat": 3.3, "portion": "100g"},
-        {"name": "Queijo minas", "calories": 264, "carbs": 3.5, "protein": 17, "fat": 21, "portion": "100g"},
-        {"name": "Tapioca", "calories": 152, "carbs": 37, "protein": 0.2, "fat": 0.1, "portion": "unidade"},
-        {"name": "Açaí", "calories": 70, "carbs": 6.2, "protein": 1.5, "fat": 5, "portion": "100g"},
+        # Carboidratos
+        {"name": "Arroz branco", "calories": 130, "carbs": 28, "protein": 2.5, "fat": 0.3, "portion": "100g", "category": "carboidratos"},
+        {"name": "Arroz integral", "calories": 110, "carbs": 23, "protein": 2.6, "fat": 0.9, "portion": "100g", "category": "carboidratos"},
+        {"name": "Feijão preto", "calories": 77, "carbs": 14, "protein": 4.5, "fat": 0.5, "portion": "100g", "category": "carboidratos"},
+        {"name": "Feijão carioca", "calories": 76, "carbs": 13.6, "protein": 4.8, "fat": 0.5, "portion": "100g", "category": "carboidratos"},
+        {"name": "Pão francês", "calories": 300, "carbs": 58, "protein": 9, "fat": 3.5, "portion": "unidade", "category": "carboidratos"},
+        {"name": "Pão integral", "calories": 247, "carbs": 49, "protein": 13, "fat": 3.4, "portion": "unidade", "category": "carboidratos"},
+        {"name": "Batata doce", "calories": 86, "carbs": 20, "protein": 1.6, "fat": 0.1, "portion": "100g", "category": "carboidratos"},
+        {"name": "Batata inglesa", "calories": 77, "carbs": 17, "protein": 2, "fat": 0.1, "portion": "100g", "category": "carboidratos"},
+        {"name": "Macarrão", "calories": 131, "carbs": 25, "protein": 5, "fat": 1.1, "portion": "100g", "category": "carboidratos"},
+        {"name": "Tapioca", "calories": 152, "carbs": 37, "protein": 0.2, "fat": 0.1, "portion": "unidade", "category": "carboidratos"},
+        
+        # Proteínas
+        {"name": "Frango grelhado", "calories": 165, "carbs": 0, "protein": 31, "fat": 3.6, "portion": "100g", "category": "proteinas"},
+        {"name": "Peito de frango", "calories": 195, "carbs": 0, "protein": 29.8, "fat": 7.8, "portion": "100g", "category": "proteinas"},
+        {"name": "Carne bovina (patinho)", "calories": 163, "carbs": 0, "protein": 30.9, "fat": 3.6, "portion": "100g", "category": "proteinas"},
+        {"name": "Carne bovina (alcatra)", "calories": 250, "carbs": 0, "protein": 26, "fat": 17, "portion": "100g", "category": "proteinas"},
+        {"name": "Carne moída", "calories": 209, "carbs": 0, "protein": 26.1, "fat": 11, "portion": "100g", "category": "proteinas"},
+        {"name": "Peixe (tilápia)", "calories": 96, "carbs": 0, "protein": 20, "fat": 1.7, "portion": "100g", "category": "proteinas"},
+        {"name": "Salmão", "calories": 208, "carbs": 0, "protein": 20, "fat": 13, "portion": "100g", "category": "proteinas"},
+        {"name": "Atum em lata", "calories": 116, "carbs": 0, "protein": 26, "fat": 0.8, "portion": "100g", "category": "proteinas"},
+        {"name": "Ovo cozido", "calories": 155, "carbs": 1.1, "protein": 13, "fat": 11, "portion": "unidade", "category": "proteinas"},
+        {"name": "Ovo frito", "calories": 196, "carbs": 1.2, "protein": 13.6, "fat": 15, "portion": "unidade", "category": "proteinas"},
+        {"name": "Queijo minas", "calories": 264, "carbs": 3.5, "protein": 17, "fat": 21, "portion": "100g", "category": "proteinas"},
+        {"name": "Queijo muçarela", "calories": 280, "carbs": 2.2, "protein": 18.9, "fat": 22.4, "portion": "100g", "category": "proteinas"},
+        {"name": "Presunto", "calories": 145, "carbs": 1.5, "protein": 19.2, "fat": 7, "portion": "100g", "category": "proteinas"},
+        {"name": "Peito de peru", "calories": 103, "carbs": 1, "protein": 20, "fat": 2, "portion": "100g", "category": "proteinas"},
+        
+        # Frutas
+        {"name": "Banana", "calories": 89, "carbs": 23, "protein": 1.1, "fat": 0.3, "portion": "unidade", "category": "frutas"},
+        {"name": "Maçã", "calories": 52, "carbs": 14, "protein": 0.3, "fat": 0.2, "portion": "unidade", "category": "frutas"},
+        {"name": "Laranja", "calories": 47, "carbs": 12, "protein": 0.9, "fat": 0.1, "portion": "unidade", "category": "frutas"},
+        {"name": "Mamão", "calories": 43, "carbs": 11, "protein": 0.5, "fat": 0.1, "portion": "100g", "category": "frutas"},
+        {"name": "Morango", "calories": 32, "carbs": 7.7, "protein": 0.7, "fat": 0.3, "portion": "100g", "category": "frutas"},
+        {"name": "Melancia", "calories": 30, "carbs": 8, "protein": 0.6, "fat": 0.2, "portion": "100g", "category": "frutas"},
+        {"name": "Abacaxi", "calories": 50, "carbs": 13, "protein": 0.5, "fat": 0.1, "portion": "100g", "category": "frutas"},
+        {"name": "Açaí", "calories": 70, "carbs": 6.2, "protein": 1.5, "fat": 5, "portion": "100g", "category": "frutas"},
+        
+        # Laticínios
+        {"name": "Leite integral", "calories": 61, "carbs": 4.7, "protein": 3.2, "fat": 3.3, "portion": "200ml", "category": "laticinios"},
+        {"name": "Leite desnatado", "calories": 35, "carbs": 4.9, "protein": 3.4, "fat": 0.2, "portion": "200ml", "category": "laticinios"},
+        {"name": "Iogurte natural", "calories": 61, "carbs": 4.7, "protein": 3.5, "fat": 3.3, "portion": "100g", "category": "laticinios"},
+        {"name": "Iogurte grego", "calories": 97, "carbs": 3.6, "protein": 9, "fat": 5, "portion": "100g", "category": "laticinios"},
+        {"name": "Requeijão", "calories": 235, "carbs": 3, "protein": 8.5, "fat": 22, "portion": "100g", "category": "laticinios"},
+        
+        # Bebidas
+        {"name": "Refrigerante Coca-Cola", "calories": 42, "carbs": 10.6, "protein": 0, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Refrigerante Guaraná", "calories": 41, "carbs": 10.3, "protein": 0, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Refrigerante Zero", "calories": 0, "carbs": 0, "protein": 0, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Suco de laranja natural", "calories": 45, "carbs": 10.4, "protein": 0.7, "fat": 0.2, "portion": "100ml", "category": "bebidas"},
+        {"name": "Suco de laranja industrializado", "calories": 47, "carbs": 11.5, "protein": 0.2, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Suco de uva integral", "calories": 60, "carbs": 15, "protein": 0.4, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Água de coco", "calories": 19, "carbs": 3.7, "protein": 0.7, "fat": 0.2, "portion": "100ml", "category": "bebidas"},
+        {"name": "Café com açúcar", "calories": 40, "carbs": 10, "protein": 0.2, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Café sem açúcar", "calories": 2, "carbs": 0, "protein": 0.3, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        {"name": "Chá mate", "calories": 1, "carbs": 0.3, "protein": 0, "fat": 0, "portion": "100ml", "category": "bebidas"},
+        
+        # Merendas/Lanches
+        {"name": "Pão de queijo", "calories": 314, "carbs": 45, "protein": 6.4, "fat": 12, "portion": "unidade", "category": "merendas"},
+        {"name": "Coxinha", "calories": 250, "carbs": 30, "protein": 8, "fat": 10, "portion": "unidade", "category": "merendas"},
+        {"name": "Pastel de carne", "calories": 280, "carbs": 35, "protein": 9, "fat": 11, "portion": "unidade", "category": "merendas"},
+        {"name": "Empada", "calories": 220, "carbs": 20, "protein": 6, "fat": 13, "portion": "unidade", "category": "merendas"},
+        {"name": "Sanduíche natural", "calories": 200, "carbs": 28, "protein": 12, "fat": 5, "portion": "unidade", "category": "merendas"},
+        {"name": "Bolo simples", "calories": 297, "carbs": 52, "protein": 5.3, "fat": 7.8, "portion": "fatia", "category": "merendas"},
+        {"name": "Biscoito maria", "calories": 443, "carbs": 76, "protein": 8.6, "fat": 10.6, "portion": "100g", "category": "merendas"},
+        {"name": "Granola", "calories": 471, "carbs": 64, "protein": 12, "fat": 19, "portion": "100g", "category": "merendas"},
+        {"name": "Castanha de caju", "calories": 553, "carbs": 30, "protein": 18, "fat": 44, "portion": "100g", "category": "merendas"},
+        {"name": "Amendoim", "calories": 567, "carbs": 16, "protein": 26, "fat": 49, "portion": "100g", "category": "merendas"},
+        {"name": "Pipoca", "calories": 387, "carbs": 78, "protein": 11, "fat": 4.5, "portion": "100g", "category": "merendas"},
     ]
+    
+    filtered = brazilian_foods
+    
+    if category:
+        filtered = [food for food in filtered if food["category"] == category]
     
     if search:
         search_lower = search.lower()
-        filtered = [food for food in brazilian_foods if search_lower in food["name"].lower()]
-        return {"foods": filtered}
+        filtered = [food for food in filtered if search_lower in food["name"].lower()]
     
-    return {"foods": brazilian_foods}
+    return {"foods": filtered}
 
 # =========================
 # GOALS & TRACKING
