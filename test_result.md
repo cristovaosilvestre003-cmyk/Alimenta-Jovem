@@ -161,15 +161,18 @@ backend:
   
   - task: "Sistema de Refeições (CRUD)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implementado CRUD completo para refeições. POST /api/meals para criar, GET /api/meals para listar (filtro por data), GET /api/meals/history para histórico. Calcula totais de calorias e macros. Precisa testar integração completa."
+      - working: true
+        agent: "testing"
+        comment: "Sistema de refeições funcionando completamente. POST /api/meals cria refeições com sucesso, GET /api/meals lista refeições do dia com totais calculados corretamente, GET /api/meals/history retorna histórico de 7 dias. Testado com múltiplas refeições (breakfast, lunch, dinner, snack) - cálculos de calorias e macros precisos."
   
   - task: "Rastreador de Água"
     implemented: true
