@@ -191,15 +191,18 @@ backend:
   
   - task: "Sistema de Metas"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implementado POST /api/goals para criar metas, GET /api/goals para listar, PUT /api/goals/{goal_id}/complete para marcar como completa. Precisa testar integração."
+      - working: true
+        agent: "testing"
+        comment: "Sistema de metas funcionando completamente. POST /api/goals cria metas com sucesso (testado com meta de 2000 calorias diárias), GET /api/goals lista metas do usuário, PUT /api/goals/{goal_id}/complete marca metas como completadas. Fluxo completo validado."
   
   - task: "Sistema de Gamificação (Streaks e Badges)"
     implemented: true
