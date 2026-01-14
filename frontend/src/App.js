@@ -52,17 +52,117 @@ const AuthProvider = ({ children }) => {
 
 const useAuth = () => useContext(AuthContext);
 
+// Theme Context
+const ThemeContext = createContext(null);
+
+const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+const useTheme = () => useContext(ThemeContext);
+
+// SVG Icons
+const Icons = {
+  Home: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  ),
+  Camera: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+  ),
+  Lightbulb: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M9 18h6M10 22h4M15 7a5 5 0 1 0-6 4.9V14a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.1A5 5 0 0 0 15 7z"/>
+    </svg>
+  ),
+  User: () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  ),
+  Sun: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  ),
+  Moon: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  ),
+  Droplet: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+    </svg>
+  ),
+  Flame: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    </svg>
+  ),
+  Plus: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  ),
+  Search: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.35-4.35"/>
+    </svg>
+  ),
+  X: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  ),
+};
+
 // Main App Component
 function App() {
   return (
-    <AuthProvider>
-      <MainApp />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <MainApp />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
 function MainApp() {
   const { user, token, loading } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [currentView, setCurrentView] = useState('home');
 
   if (loading) {
@@ -80,10 +180,15 @@ function MainApp() {
 
   return (
     <div className="app-container">
+      {/* Theme Toggle */}
+      <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
+        {theme === 'light' ? <Icons.Moon /> : <Icons.Sun />}
+      </button>
+
       {/* Ad Banner - Free Version */}
       {!user?.is_premium && (
         <div className="ad-banner">
-          <span>📢 Publicidade</span>
+          <span>Publicidade</span>
           <button className="upgrade-btn" onClick={() => setCurrentView('premium')}>
             Remover Anúncios
           </button>
@@ -105,28 +210,28 @@ function MainApp() {
           className={currentView === 'home' ? 'active' : ''}
           onClick={() => setCurrentView('home')}
         >
-          <span className="nav-icon">🏠</span>
+          <Icons.Home />
           <span className="nav-label">Início</span>
         </button>
         <button 
           className={currentView === 'scanner' ? 'active' : ''}
           onClick={() => setCurrentView('scanner')}
         >
-          <span className="nav-icon">📷</span>
+          <Icons.Camera />
           <span className="nav-label">Scanner</span>
         </button>
         <button 
           className={currentView === 'tips' ? 'active' : ''}
           onClick={() => setCurrentView('tips')}
         >
-          <span className="nav-icon">💡</span>
+          <Icons.Lightbulb />
           <span className="nav-label">Dicas</span>
         </button>
         <button 
           className={currentView === 'profile' ? 'active' : ''}
           onClick={() => setCurrentView('profile')}
         >
-          <span className="nav-icon">👤</span>
+          <Icons.User />
           <span className="nav-label">Perfil</span>
         </button>
       </nav>
@@ -134,7 +239,7 @@ function MainApp() {
   );
 }
 
-// Auth Screen
+// Auth Screen (unchanged)
 function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -285,7 +390,7 @@ function AuthScreen() {
   );
 }
 
-// Home Screen
+// Home Screen with quantity selector
 function HomeScreen() {
   const { user, token } = useAuth();
   const [meals, setMeals] = useState([]);
@@ -342,7 +447,7 @@ function HomeScreen() {
     <div className="home-screen">
       <header className="screen-header">
         <div>
-          <h1>Olá, {user?.name}! 👋</h1>
+          <h1>Olá, {user?.name}!</h1>
           <p>O que você vai comer hoje?</p>
         </div>
       </header>
@@ -357,7 +462,7 @@ function HomeScreen() {
             </p>
           </div>
           <div className="streak-badge">
-            <span className="streak-icon">🔥</span>
+            <Icons.Flame />
             <span className="streak-count">{user?.streak_count || 0}</span>
           </div>
         </div>
@@ -386,9 +491,12 @@ function HomeScreen() {
       {/* Water Tracker */}
       <div className="card water-card">
         <div className="water-header">
-          <span>💧 Água hoje</span>
+          <span className="water-title">
+            <Icons.Droplet />
+            Água hoje
+          </span>
           <button className="btn-secondary-small" onClick={logWater}>
-            + Copo
+            <Icons.Plus /> Copo
           </button>
         </div>
         <div className="water-glasses">
@@ -397,7 +505,7 @@ function HomeScreen() {
               key={i} 
               className={`water-glass ${i < waterLog.glasses_count ? 'filled' : ''}`}
             >
-              💧
+              <Icons.Droplet />
             </span>
           ))}
         </div>
@@ -427,7 +535,7 @@ function HomeScreen() {
                     setShowAddMeal(true);
                   }}
                 >
-                  + Adicionar
+                  <Icons.Plus /> Adicionar
                 </button>
               </div>
               {typeMeals.length > 0 ? (
@@ -464,21 +572,27 @@ function HomeScreen() {
   );
 }
 
-// Add Meal Modal
+// Add Meal Modal with Quantity Selector
 function AddMealModal({ mealType, onClose, onSuccess }) {
   const { token } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [foodDatabase, setFoodDatabase] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
+  const [quantity, setQuantity] = useState(100);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadFoodDatabase();
-  }, []);
+  }, [selectedCategory]);
 
   const loadFoodDatabase = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/food-database`);
+      const params = {};
+      if (selectedCategory !== 'all') {
+        params.category = selectedCategory;
+      }
+      const response = await axios.get(`${API_URL}/api/food-database`, { params });
       setFoodDatabase(response.data.foods);
     } catch (error) {
       console.error('Error loading food database:', error);
@@ -491,19 +605,36 @@ function AddMealModal({ mealType, onClose, onSuccess }) {
       )
     : foodDatabase;
 
-  const handleAddMeal = async (food) => {
+  const handleSelectFood = (food) => {
+    setSelectedFood(food);
+  };
+
+  const calculateNutrition = (food, qty) => {
+    const multiplier = qty / 100;
+    return {
+      calories: food.calories * multiplier,
+      carbs: food.carbs * multiplier,
+      protein: food.protein * multiplier,
+      fat: food.fat * multiplier
+    };
+  };
+
+  const handleAddMeal = async () => {
+    if (!selectedFood) return;
+    
     setLoading(true);
     try {
+      const nutrition = calculateNutrition(selectedFood, quantity);
       await axios.post(
         `${API_URL}/api/meals`,
         {
           meal_type: mealType,
-          food_name: food.name,
-          calories: food.calories,
-          carbs: food.carbs,
-          protein: food.protein,
-          fat: food.fat,
-          portion_size: food.portion
+          food_name: selectedFood.name,
+          calories: nutrition.calories,
+          carbs: nutrition.carbs,
+          protein: nutrition.protein,
+          fat: nutrition.fat,
+          portion_size: `${quantity}g`
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -516,44 +647,147 @@ function AddMealModal({ mealType, onClose, onSuccess }) {
     }
   };
 
+  const categories = [
+    { value: 'all', label: 'Todos' },
+    { value: 'carboidratos', label: 'Carboidratos' },
+    { value: 'proteinas', label: 'Proteínas' },
+    { value: 'frutas', label: 'Frutas' },
+    { value: 'laticinios', label: 'Laticínios' },
+    { value: 'bebidas', label: 'Bebidas' },
+    { value: 'merendas', label: 'Merendas' }
+  ];
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Adicionar Alimento</h2>
-          <button className="btn-close" onClick={onClose}>✕</button>
+          <button className="btn-close" onClick={onClose}><Icons.X /></button>
         </div>
 
-        <input
-          type="text"
-          placeholder="Buscar alimento..."
-          className="search-input"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        {!selectedFood ? (
+          <>
+            <div className="search-container">
+              <Icons.Search />
+              <input
+                type="text"
+                placeholder="Buscar alimento..."
+                className="search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
 
-        <div className="food-list">
-          {filteredFoods.map((food, index) => (
-            <div key={index} className="food-item" onClick={() => handleAddMeal(food)}>
-              <div className="food-info">
-                <span className="food-name">{food.name}</span>
-                <span className="food-portion">{food.portion}</span>
+            <div className="category-filter">
+              {categories.map(cat => (
+                <button
+                  key={cat.value}
+                  className={`category-btn ${selectedCategory === cat.value ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(cat.value)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="food-list">
+              {filteredFoods.map((food, index) => (
+                <div key={index} className="food-item" onClick={() => handleSelectFood(food)}>
+                  <div className="food-info">
+                    <span className="food-name">{food.name}</span>
+                    <span className="food-portion">{food.portion}</span>
+                  </div>
+                  <div className="food-nutrition">
+                    <span className="food-calories">{food.calories} kcal</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="quantity-selector">
+            <div className="selected-food-info">
+              <h3>{selectedFood.name}</h3>
+              <p className="food-base-info">{selectedFood.portion} = {selectedFood.calories} kcal</p>
+            </div>
+
+            <div className="quantity-control">
+              <label>Quantidade (gramas):</label>
+              <div className="quantity-input-group">
+                <button 
+                  className="quantity-btn"
+                  onClick={() => setQuantity(Math.max(10, quantity - 10))}
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(10, parseInt(e.target.value) || 10))}
+                  min="10"
+                  max="1000"
+                />
+                <button 
+                  className="quantity-btn"
+                  onClick={() => setQuantity(Math.min(1000, quantity + 10))}
+                >
+                  +
+                </button>
               </div>
-              <div className="food-nutrition">
-                <span className="food-calories">{food.calories} kcal</span>
+              <div className="quantity-presets">
+                {[50, 100, 150, 200, 300].map(preset => (
+                  <button
+                    key={preset}
+                    className="preset-btn"
+                    onClick={() => setQuantity(preset)}
+                  >
+                    {preset}g
+                  </button>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+
+            <div className="nutrition-preview">
+              <h4>Valores Nutricionais ({quantity}g):</h4>
+              <div className="nutrition-grid">
+                <div className="nutrition-item">
+                  <span className="nutrition-label">Calorias:</span>
+                  <span className="nutrition-value">{Math.round(calculateNutrition(selectedFood, quantity).calories)} kcal</span>
+                </div>
+                <div className="nutrition-item">
+                  <span className="nutrition-label">Carboidratos:</span>
+                  <span className="nutrition-value">{Math.round(calculateNutrition(selectedFood, quantity).carbs)}g</span>
+                </div>
+                <div className="nutrition-item">
+                  <span className="nutrition-label">Proteínas:</span>
+                  <span className="nutrition-value">{Math.round(calculateNutrition(selectedFood, quantity).protein)}g</span>
+                </div>
+                <div className="nutrition-item">
+                  <span className="nutrition-label">Gorduras:</span>
+                  <span className="nutrition-value">{Math.round(calculateNutrition(selectedFood, quantity).fat)}g</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setSelectedFood(null)}>
+                Voltar
+              </button>
+              <button className="btn-primary" onClick={handleAddMeal} disabled={loading}>
+                {loading ? 'Adicionando...' : 'Adicionar Refeição'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-// Scanner Screen
+// Scanner Screen (unchanged core functionality)
 function ScannerScreen() {
   const { token } = useAuth();
-  const [mode, setMode] = useState('camera'); // 'camera', 'upload', 'barcode'
+  const [mode, setMode] = useState('camera');
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
   const [stream, setStream] = useState(null);
@@ -688,13 +922,13 @@ function ScannerScreen() {
           className={mode === 'camera' ? 'active' : ''}
           onClick={() => setMode('camera')}
         >
-          📷 Câmera
+          <Icons.Camera /> Câmera
         </button>
         <button 
           className={mode === 'upload' ? 'active' : ''}
           onClick={() => setMode('upload')}
         >
-          🖼️ Upload
+          Upload
         </button>
       </div>
 
@@ -713,7 +947,7 @@ function ScannerScreen() {
               onClick={capturePhoto}
               disabled={analyzing}
             >
-              {analyzing ? 'Analisando...' : '📸 Capturar'}
+              {analyzing ? 'Analisando...' : 'Capturar'}
             </button>
           </>
         )}
@@ -795,7 +1029,7 @@ function ScannerScreen() {
   );
 }
 
-// Tips Screen
+// Tips and Badges Screen (unchanged)
 function TipsScreen() {
   const { token, user } = useAuth();
   const [tips, setTips] = useState([]);
@@ -827,19 +1061,6 @@ function TipsScreen() {
     }
   };
 
-  const completeGoal = async (goalId) => {
-    try {
-      await axios.put(
-        `${API_URL}/api/goals/${goalId}/complete`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      loadTipsAndGoals();
-    } catch (error) {
-      console.error('Error completing goal:', error);
-    }
-  };
-
   return (
     <div className="tips-screen">
       <header className="screen-header">
@@ -852,13 +1073,13 @@ function TipsScreen() {
           className={activeTab === 'tips' ? 'active' : ''}
           onClick={() => setActiveTab('tips')}
         >
-          💡 Dicas
+          Dicas
         </button>
         <button 
           className={activeTab === 'badges' ? 'active' : ''}
           onClick={() => setActiveTab('badges')}
         >
-          🏆 Conquistas
+          Conquistas
         </button>
       </div>
 
@@ -880,7 +1101,7 @@ function TipsScreen() {
       {activeTab === 'badges' && (
         <>
           <div className="streak-display">
-            <span className="streak-icon-large">🔥</span>
+            <Icons.Flame />
             <div className="streak-info">
               <h2>{user?.streak_count || 0} dias</h2>
               <p>Sequência atual</p>
@@ -906,7 +1127,7 @@ function TipsScreen() {
   );
 }
 
-// Profile Screen
+// Profile Screen with theme toggle (unchanged)
 function ProfileScreen() {
   const { user, logout } = useAuth();
 
@@ -933,7 +1154,7 @@ function ProfileScreen() {
 
       <div className="profile-card">
         <div className="profile-avatar">
-          <span className="avatar-icon">👤</span>
+          <Icons.User />
         </div>
         <h2 className="profile-name">{user?.name}</h2>
         <p className="profile-email">{user?.email}</p>
@@ -941,7 +1162,7 @@ function ProfileScreen() {
 
       <div className="profile-stats">
         <div className="stat-item">
-          <span className="stat-icon">🔥</span>
+          <Icons.Flame />
           <div className="stat-info">
             <span className="stat-value">{user?.streak_count || 0}</span>
             <span className="stat-label">dias de sequência</span>
@@ -991,7 +1212,7 @@ function ProfileScreen() {
   );
 }
 
-// Premium Screen (Mock)
+// Premium Screen (unchanged)
 function PremiumScreen() {
   return (
     <div className="premium-screen">
