@@ -1610,3 +1610,329 @@ svg {
 button, input, select, .card {
   transition: all 0.2s ease;
 }
+
+/* Statistics Screen */
+.statistics-screen {
+  padding-bottom: 20px;
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-light);
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.chart-container {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: 16px;
+  margin: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-light);
+}
+
+.chart-container h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.statistics-content {
+  padding-bottom: 20px;
+}
+
+/* Meal Plans Screen */
+.meal-plans-screen {
+  padding-bottom: 20px;
+}
+
+.generate-btn {
+  width: calc(100% - 32px);
+  margin: 16px;
+  padding: 18px;
+  font-size: 18px;
+}
+
+.saved-plans {
+  padding: 0 16px;
+}
+
+.saved-plans h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.plan-card {
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-light);
+}
+
+.plan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.plan-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.plan-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.plan-date {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  gap: 12px;
+}
+
+.btn-back {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.plan-details {
+  padding-bottom: 20px;
+}
+
+.plan-details h2 {
+  font-size: 22px;
+  font-weight: 700;
+  padding: 0 16px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.plan-target {
+  padding: 0 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.days-list {
+  padding: 0 16px;
+}
+
+.day-card {
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-light);
+}
+
+.day-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.meal-section {
+  margin-bottom: 16px;
+}
+
+.meal-section:last-child {
+  margin-bottom: 0;
+}
+
+.meal-section h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meal-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.meal-section li {
+  padding: 8px 12px;
+  background: var(--accent-light-green);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* Barcode Search Modal */
+.barcode-modal {
+  max-height: 80vh;
+}
+
+.barcode-search {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.barcode-input {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  font-size: 16px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: 'Satoshi', sans-serif;
+}
+
+.barcode-input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.barcode-result {
+  text-align: center;
+}
+
+.product-image {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.product-brand {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.nutrition-info {
+  background: var(--accent-light-green);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.nutrition-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.nutrition-row:last-child {
+  border-bottom: none;
+}
+
+.source-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 16px 0;
+}
+
+/* Notifications Settings */
+.notifications-settings {
+  padding: 20px;
+}
+
+.notifications-settings h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.setting-item {
+  margin-bottom: 16px;
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.setting-item label:hover {
+  background: var(--accent-light-green);
+}
+
+.setting-item input[type=\"checkbox\"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.setting-item span {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
