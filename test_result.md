@@ -134,15 +134,18 @@ backend:
   
   - task: "Scanner de Código de Barras (Mock)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implementado endpoint /api/scan-barcode com banco de dados mock de produtos brasileiros (Nescau, Leite Ninho, Neston, Arroz Tio João, Bis). Precisa testar integração com frontend."
+      - working: true
+        agent: "testing"
+        comment: "Scanner de código de barras funcionando perfeitamente. Testado com código válido (7891000100103 - Nescau) retorna produto corretamente. Código inválido (1234567890123) retorna erro apropriado. Database mock com 5 produtos brasileiros funcionando."
   
   - task: "Banco de Dados de Alimentos Brasileiros"
     implemented: true
