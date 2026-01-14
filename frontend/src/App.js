@@ -283,8 +283,23 @@ function AuthScreen() {
       const response = await axios.post(`${API_URL}${endpoint}`, formData);
       login(response.data.access_token, response.data.user);
     } catch (err) {
-      const errorMessage = err.response?.data?.detail || 'Erro ao processar solicitação';
-      setError(String(errorMessage));
+      // Handle error properly - convert to string
+      let errorMessage = 'Erro ao processar solicitação';
+      
+      if (err.response?.data?.detail) {
+        const detail = err.response.data.detail;
+        if (Array.isArray(detail)) {
+          errorMessage = detail.map(e => e.msg || e).join(', ');
+        } else if (typeof detail === 'string') {
+          errorMessage = detail;
+        } else if (typeof detail === 'object') {
+          errorMessage = JSON.stringify(detail);
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
