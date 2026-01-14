@@ -820,7 +820,7 @@ async def get_meal_plan(plan_id: str, current_user: dict = Depends(get_current_u
 
 @app.post("/api/meal-plans/generate")
 async def generate_meal_plan(current_user: dict = Depends(get_current_user)):
-    \"\"\"Generate automatic meal plan based on user profile\"\"\"
+    """Generate automatic meal plan based on user profile"""
     
     target_calories = current_user.get("daily_calories_target", 2000)
     
@@ -897,7 +897,7 @@ async def generate_meal_plan(current_user: dict = Depends(get_current_user)):
 
 @app.get("/api/statistics/weekly")
 async def get_weekly_statistics(current_user: dict = Depends(get_current_user)):
-    \"\"\"Get weekly statistics for charts\"\"\"
+    """Get weekly statistics for charts"""
     
     end_date = datetime.utcnow()
     start_date = end_date - timedelta(days=7)
@@ -943,7 +943,7 @@ async def get_weekly_statistics(current_user: dict = Depends(get_current_user)):
 
 @app.get("/api/statistics/monthly")
 async def get_monthly_statistics(current_user: dict = Depends(get_current_user)):
-    \"\"\"Get monthly statistics\"\"\"
+    """Get monthly statistics"""
     
     end_date = datetime.utcnow()
     start_date = end_date - timedelta(days=30)
@@ -981,7 +981,7 @@ async def get_monthly_statistics(current_user: dict = Depends(get_current_user))
 
 @app.get("/api/barcode/search/{barcode}")
 async def search_barcode_openfoodfacts(barcode: str, current_user: dict = Depends(get_current_user)):
-    \"\"\"Search product by barcode using Open Food Facts API\"\"\"
+    """Search product by barcode using Open Food Facts API"""
     
     try:
         async with aiohttp.ClientSession() as session:
