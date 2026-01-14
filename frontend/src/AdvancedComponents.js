@@ -1,4 +1,4 @@
-// Advanced Components for Alimenta Jovem
+// Advanced Components for NutriJovem
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -206,7 +206,7 @@ export function MealPlansScreen({ token, user }) {
   const sharePlan = async () => {
     if (!selectedPlan) return;
 
-    const shareText = `Confira meu plano de refeições semanal no Alimenta Jovem!\n\nMeta: ${Math.round(selectedPlan.target_calories)} kcal/dia`;
+    const shareText = `Confira meu plano de refeições semanal no NutriJovem!\n\nMeta: ${Math.round(selectedPlan.target_calories)} kcal/dia`;
     
     if (navigator.share) {
       try {

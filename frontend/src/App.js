@@ -299,7 +299,7 @@ function AuthScreen() {
     <div className="auth-screen">
       <div className="auth-container">
         <div className="auth-header">
-          <h1 className="brand-title">Alimenta Jovem</h1>
+          <h1 className="brand-title">NutriJovem</h1>
           <p className="brand-subtitle">Sua jornada para uma alimentação saudável</p>
         </div>
 

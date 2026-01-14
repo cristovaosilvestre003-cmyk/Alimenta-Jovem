@@ -32,7 +32,7 @@ app.add_middleware(
 
 # MongoDB Connection
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-DB_NAME = os.getenv("DB_NAME", "alimenta_jovem_db")
+DB_NAME = os.getenv("DB_NAME", "nutrijovem_db")
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
