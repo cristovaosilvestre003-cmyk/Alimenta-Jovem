@@ -280,16 +280,11 @@ function AuthScreen() {
 
     try {
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      console.log('API_URL:', API_URL);
-      console.log('Full URL:', `${API_URL}${endpoint}`);
-      
       const response = await axios.post(`${API_URL}${endpoint}`, formData);
-      console.log('Response:', response.data);
       login(response.data.access_token, response.data.user);
     } catch (err) {
-      console.error('Error details:', err);
-      console.error('Error response:', err.response);
-      setError(err.response?.data?.detail || 'Erro ao processar solicitação');
+      const errorMessage = err.response?.data?.detail || 'Erro ao processar solicitação';
+      setError(String(errorMessage));
     } finally {
       setLoading(false);
     }
